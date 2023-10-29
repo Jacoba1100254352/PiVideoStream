@@ -7,7 +7,7 @@ import picamera
 
 # Create a socket connection between the Raspberry Pi and the computer
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('10.37.68.171', 8000))
+client_socket.connect(('10.37.75.75', 8000))
 connection = client_socket.makefile('wb')
 
 try:
