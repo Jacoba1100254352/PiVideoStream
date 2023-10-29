@@ -1,27 +1,18 @@
 # For Pi
-import io
-import socket
-import struct
-import time
+import av
 import picamera
-import py_rtmp_stream
 
-# Create a socket connection between the Raspberry Pi and the Zoom RTMP server
-stream = py_rtmp_stream.RTMPStream(
-    url='rtmp://zoom.server.com/appname/streamname',
-    width=640,
-    height=480,
-    fps=30,
-    bitrate=500
-)
+container = av.open("rtmp://10.37.68.171/live/test")
 
-try:
-    with picamera.PiCamera() as camera:
-        camera.resolution = (640, 480)
-        # Start a stream to the RTMP server
-        camera.start_recording(stream, format='h264')
-        while True:
-            camera.wait_recording(1)
-finally:
-    camera.stop_recording()
-    stream.close()
+with picamera.PiCamera() as camera:
+    camera.resolution = (640, 480)
+    stream = container.add_stream('vp9', rate=30)
+    stream.width = camera.resolution[0]
+    stream.height = camera.resolution[1]
+
+    camera.start_recording(stream, format='vp9')
+    while True:
+        camera.wait_recording(1)
+
+camera.stop_recording()
+container.close()
